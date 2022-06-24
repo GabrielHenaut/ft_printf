@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/20 14:54:52 by ghenaut-          #+#    #+#              #
-#    Updated: 2022/06/23 15:30:24 by ghenaut-         ###   ########.fr        #
+#    Updated: 2022/06/24 23:28:04 by Ghenaut-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,7 +70,7 @@ NAME	= libft.a
 
 
 .c.o:
-	@cc -Wall -Wextra -Werror -c $< -I . -o $(<:.c=.o)
+	@cc -Wall -Wextra -Werror -c -fPIE $< -I . -o $(<:.c=.o)
 
 $(NAME): $(OBJS)
 	@ar rc $(NAME) $(OBJS)
