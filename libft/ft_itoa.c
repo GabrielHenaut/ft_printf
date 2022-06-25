@@ -3,61 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 17:49:29 by ghenaut-          #+#    #+#             */
-/*   Updated: 2022/05/27 21:06:42 by Ghenaut-         ###   ########.fr       */
+/*   Updated: 2022/06/25 00:00:18 by ghenaut-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	num_len(int n)
-{
-	size_t	size;
-
-	size = 1;
-	if (n == -2147483648)
-	{
-		size += 2;
-		n = (n % 1000000000) * -1;
-	}
-	if (n < 0)
-	{
-		n *= -1;
-		size++;
-	}
-	while (n > 9)
-	{
-		n /= 10;
-		size++;
-	}
-	return (size);
-}
-
 char	*ft_itoa(int n)
 {
-	char	*return_str;
-	size_t	size;
+	char			*result;
+	long long int	nb;
+	size_t			len;
+	int				is_negative;
 
-	size = num_len(n);
-	return_str = malloc(sizeof(char) * (size + 1));
-	if (!return_str)
+	is_negative = n < 0;
+	nb = n;
+	if (is_negative)
+		nb = -nb;
+	len = 1;
+	while (n / 10 != 0 && len++)
+		n = n / 10;
+	result = malloc(sizeof(char) * (len + 1 + is_negative));
+	if (!result)
 		return (NULL);
-	return_str[size] = '\0';
-	if (n < 0)
+	result[len + is_negative] = '\0';
+	while (len-- != 0)
 	{
-		return_str[0] = '-';
-		if (n == -2147483648)
-			return_str[1] = '2';
-		n = (n % 1000000000) * -1;
+		result[len + is_negative] = nb % 10 + '0';
+		nb /= 10;
 	}
-	while (n > 9)
-	{
-		return_str[size - 1] = (n % 10) + 48;
-		n /= 10;
-		size--;
-	}
-	return_str[size - 1] = n + 48;
-	return (return_str);
+	if (is_negative)
+		result[0] = '-';
+	return (result);
 }

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_int.c                                          :+:      :+:    :+:   */
+/*   add_int_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 21:27:53 by ghenaut-          #+#    #+#             */
-/*   Updated: 2022/06/24 06:53:58 by Ghenaut-         ###   ########.fr       */
+/*   Updated: 2022/06/24 23:58:58 by ghenaut-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
 
-int	handle_flags_int(t_param *param)
+static int	handle_flags_int(t_param *param, int nbr)
 {
 	char	*tmp;
 
@@ -25,6 +25,8 @@ int	handle_flags_int(t_param *param)
 	else if (param->space && tmp[0] != '-')
 		param->str = ft_strjoin(" ", tmp);
 	param->str_len++;
+	if (param->precision == 0 && param->has_precision && nbr == 0)
+		param->str_len--;
 	if (param->width > param->str_len)
 		if (fill_int_width(param) < 0)
 			return (-1);
@@ -50,6 +52,6 @@ void	add_int(int nbr, t_param *param)
 	param->str_len += ft_strlen(param->str) - 1;
 	free(tmp);
 	free(str);
-	if (handle_flags_int(param) == -1)
+	if (handle_flags_int(param, nbr) == -1)
 		param->error = 1;
 }

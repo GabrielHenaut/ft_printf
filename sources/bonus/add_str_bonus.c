@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   add_str_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 00:03:11 by ghenaut-          #+#    #+#             */
-/*   Updated: 2022/06/24 06:54:52 by Ghenaut-         ###   ########.fr       */
+/*   Updated: 2022/06/24 23:04:17 by ghenaut-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,11 @@ void	add_str(char *str, t_param *param)
 {
 	param->specifier = 's';
 	if (str == NULL)
+	{
 		str = "(null)";
+		if (param->precision < 6)
+			param->precision = 0;
+	}
 	if (param->has_precision)
 		param->str = ft_substr(str, 0, param->precision);
 	else

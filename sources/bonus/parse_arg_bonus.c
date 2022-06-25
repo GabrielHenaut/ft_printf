@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_arg_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 00:52:35 by ghenaut-          #+#    #+#             */
-/*   Updated: 2022/06/24 06:56:29 by Ghenaut-         ###   ########.fr       */
+/*   Updated: 2022/06/24 23:47:45 by ghenaut-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	init_param(t_param *param)
 	param->hash = 0;
 	param->space = 0;
 	param->plus = 0;
-	param->placeholder_len = 0;
+	// param->placeholder_len = 0;
 	param->has_precision = 0;
-	param->specifier = 0;
+	// param->specifier = 0;
 	param->error = 0;
 }
 
@@ -51,33 +51,44 @@ static void	ft_parse_precision(char *str, va_list args, t_param *param)
 		param->precision = 0;
 }
 
-static void	parse_flags(char *str, va_list args, t_param *param)
+static int handle_width(char *str, va_list args, t_param *param, int i)
+{
+	if (str[i] == '*')
+		param->width = va_arg(args, int);
+	else
+		param->width = ft_atoi(&str[i]);
+	if ((int)param->width < 0)
+	{
+		param->minus = 1;
+		param->width *= -1;
+	}
+	return (1);
+}
+
+static int	parse_flags(char *str, va_list args, t_param *param)
 {
 	int	specified;
+	int i;
 
 	specified = 0;
-	while (*str != '.' && !ft_strchr(CONVERSIONS, *str))
+	i = 0;
+	while (str[i] != '.' && !ft_strchr(CONVERSIONS, str[i]))
 	{
-		if (*str == '-')
+		if (str[i] == '-')
 			param->minus = 1;
-		if (*str == '+')
+		if (str[i] == '+')
 			param->plus = 1;
-		if (*str == ' ')
+		if (str[i] == ' ')
 			param->space = 1;
-		if (*str == '#')
+		if (str[i] == '#')
 			param->hash = 1;
-		if (*str == '0' && !ft_isdigit(*(str - 1)))
+		if (str[i] == '0' && !ft_isdigit(str[i - 1]))
 			param->zero = 1;
-		else if (((*str > '0' && *str <= '9') || *str == '*') && !specified)
-		{
-			if (*str == '*')
-				param->width = va_arg(args, int);
-			else
-				param->width = ft_atoi(str);
-			specified = 1;
-		}
-		str++;
+		else if (((str[i] > '0' && str[i] <= '9') || str[i] == '*') && !specified)
+			specified = handle_width(str, args, param, i);
+		i++;
 	}
+	return (i);
 }
 
 void	parse_arg(char *str, va_list args, t_rtn_str *rtn)
@@ -86,18 +97,13 @@ void	parse_arg(char *str, va_list args, t_rtn_str *rtn)
 	char	*tmp;
 
 	init_param(&param);
-	parse_flags(str, args, &param);
-	if (*str == '.' && !param.specifier)
+	str += parse_flags(str, args, &param);
+	if (*str == '.')
 	{
 		param.precision = 1;
 		ft_parse_precision(str++, args, &param);
 		while (!ft_strchr(CONVERSIONS, *str))
 			str++;
-	}
-	if ((int)param.width < 0)
-	{
-		param.minus = 1;
-		param.width *= -1;
 	}
 	while (!ft_strchr(CONVERSIONS, *str))
 			str++;
