@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_arg_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: Ghenaut- <ghenaut-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 00:52:35 by ghenaut-          #+#    #+#             */
-/*   Updated: 2022/06/24 23:47:45 by ghenaut-         ###   ########.fr       */
+/*   Updated: 2022/06/25 05:19:28 by Ghenaut-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ void	init_param(t_param *param)
 	param->hash = 0;
 	param->space = 0;
 	param->plus = 0;
-	// param->placeholder_len = 0;
 	param->has_precision = 0;
-	// param->specifier = 0;
 	param->error = 0;
 }
 
@@ -51,7 +49,7 @@ static void	ft_parse_precision(char *str, va_list args, t_param *param)
 		param->precision = 0;
 }
 
-static int handle_width(char *str, va_list args, t_param *param, int i)
+static int	handle_width(char *str, va_list args, t_param *param, int i)
 {
 	if (str[i] == '*')
 		param->width = va_arg(args, int);
@@ -67,11 +65,11 @@ static int handle_width(char *str, va_list args, t_param *param, int i)
 
 static int	parse_flags(char *str, va_list args, t_param *param)
 {
-	int	specified;
-	int i;
+	int	entered;
+	int	i;
 
-	specified = 0;
 	i = 0;
+	entered = 0;
 	while (str[i] != '.' && !ft_strchr(CONVERSIONS, str[i]))
 	{
 		if (str[i] == '-')
@@ -84,8 +82,8 @@ static int	parse_flags(char *str, va_list args, t_param *param)
 			param->hash = 1;
 		if (str[i] == '0' && !ft_isdigit(str[i - 1]))
 			param->zero = 1;
-		else if (((str[i] > '0' && str[i] <= '9') || str[i] == '*') && !specified)
-			specified = handle_width(str, args, param, i);
+		else if (((str[i] > '0' && str[i] <= '9') || str[i] == '*') && !entered)
+			entered = handle_width(str, args, param, i);
 		i++;
 	}
 	return (i);
